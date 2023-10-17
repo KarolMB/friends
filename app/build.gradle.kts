@@ -48,6 +48,32 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    testOptions.unitTests.all {
+        it.testLogging.events = setOf(
+            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_OUT,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR
+        )
+    }
+
+//    testOptions.unitTests.apply {
+//        all(KotlinClosure1<Test, Test>({
+//            apply {
+//                testLogging.exceptionFormat =
+//                    org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+//                testLogging.events = setOf(
+//                    org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+//                    org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+//                    org.gradle.api.tasks.testing.logging.TestLogEvent.STANDARD_ERROR
+//                )
+//                testLogging.showCauses = true
+//                testLogging.showExceptions = true
+//            }
+//        }, this))
+//    }
 }
 
 dependencies {
