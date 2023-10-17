@@ -21,6 +21,15 @@ android {
         }
     }
 
+    signingConfigs {
+        this.create("release").apply {
+            storeFile = file(System.getenv("HOME") + "/keystores/karol/upload-keystore.jks")
+            storePassword = System.getenv("KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("FRIENDS_KEY_ALIAS")
+            keyPassword = System.getenv("FRIENDS_KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -28,6 +37,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.findByName("release")
         }
     }
     compileOptions {
