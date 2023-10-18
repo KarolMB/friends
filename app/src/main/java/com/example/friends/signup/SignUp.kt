@@ -32,6 +32,9 @@ import com.example.friends.R
 @Composable
 @Preview(showBackground = true)
 fun SignUp() {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,11 +43,9 @@ fun SignUp() {
     {
         ScreenTitle(titleResource = R.string.create_an_account)
         Spacer(modifier = Modifier.height(16.dp))
-        var email by remember { mutableStateOf("") }
         EmailField(
             value = email,
             onValueChanged = { email = it })
-        var password by remember { mutableStateOf("") }
         PasswordField(
             value = password,
             onValueChanged = { password = it },
@@ -70,6 +71,7 @@ private fun ScreenTitle(@StringRes titleResource: Int) {
         )
     }
 }
+
 @Composable
 private fun EmailField(
     value: String,
@@ -82,29 +84,42 @@ private fun EmailField(
         onValueChange = onValueChanged
     )
 }
+
 @Composable
 private fun PasswordField(
     value: String,
     onValueChanged: (String) -> Unit,
 ) {
-    var isVisible by remember {
-        mutableStateOf(false)
-    }
+    var isVisible by remember { mutableStateOf(false) }
+    val visualTransformation =
+        if (isVisible) VisualTransformation.None else PasswordVisualTransformation()
+
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = value,
         trailingIcon = {
-            IconButton(onClick = { isVisible = !isVisible }) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_visibility_eye_24),
-                    contentDescription = null
-                )
+            VisibilityToggle(isVisible) {
+                isVisible = !isVisible
             }
         },
-        visualTransformation = if (isVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        visualTransformation = visualTransformation,
         label = { Text(text = stringResource(id = R.string.password)) },
         onValueChange = onValueChanged
     )
+}
+
+@Composable
+private fun VisibilityToggle(
+    isVisible: Boolean,
+    onToggle: () -> Unit
+) {
+    IconButton(onClick = { onToggle() }) {
+        val resource = if (isVisible) R.drawable.ic_eye_visible else R.drawable.ic_eye_invisible
+        Image(
+            painter = painterResource(id = resource),
+            contentDescription = null
+        )
+    }
 }
 
 
