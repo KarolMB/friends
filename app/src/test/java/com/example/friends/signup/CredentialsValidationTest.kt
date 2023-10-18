@@ -3,7 +3,6 @@ package com.example.friends.signup
 import com.example.friends.InstantTaskExecutorExtension
 import com.example.friends.signup.state.SignUpState
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
@@ -27,11 +26,20 @@ class CredentialsValidationTest {
         assertEquals(SignUpState.BadEmail, viewModel.signUpState.value)
     }
 
-    @Test
-    fun invalidPassword() {
+    @ParameterizedTest
+    @CsvSource(
+        "''",
+        "'      '",
+        "'12'",
+        "'1234789'",
+        "'abdc4567'",
+        "'abdced4567!$'",
+        "'ABDCDEF4567!$'",
+    )
+    fun invalidPassword(password: String) {
         val viewModel = SignUpViewModel()
 
-        viewModel.createAccount("test@test.com", "", ":about:")
+        viewModel.createAccount("test@test.com", password, ":about:")
 
         assertEquals(SignUpState.BadPassword, viewModel.signUpState.value)
     }
