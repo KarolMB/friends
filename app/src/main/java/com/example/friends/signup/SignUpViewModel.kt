@@ -2,6 +2,7 @@ package com.example.friends.signup
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.friends.domain.user.User
 import com.example.friends.domain.validation.CredentialsValidationResult
 import com.example.friends.domain.validation.RegexCredentialsValidator
 import com.example.friends.signup.state.SignUpState
@@ -12,6 +13,8 @@ class SignUpViewModel(
 
     private val _mutableSignUpState = MutableLiveData<SignUpState>()
     val signUpState: LiveData<SignUpState> = _mutableSignUpState
+
+    private val userForPassword = mutableMapOf<String, MutableList<User>>()
     fun createAccount(
         email: String,
         password: String,
@@ -27,9 +30,18 @@ class SignUpViewModel(
             }
 
             CredentialsValidationResult.Valid -> {
-                _mutableSignUpState.value = SignUpState.Valid
+                val isKnown = userForPassword.values
+                    .flatten()
+                    .any { it.email == email }
+                if (isKnown) {
+                    _mutableSignUpState.value = SignUpState.DuplicateAccount
+                } else {
+                    val userId = email.takeWhile { it != '@' } + "Id"
+                    val user = User(userId, email, about)
+                    userForPassword.getOrPut(password, ::mutableListOf).add(user)
+                    _mutableSignUpState.value = SignUpState.SignedUp(user)
+                }
             }
         }
     }
-
 }
