@@ -48,9 +48,14 @@ class SignUpViewModel(
         about: String,
         password: String
     ): User {
+        if (userForPassword.values.flatten().any { it.email == email }) {
+            throw DuplicateAccountException()
+        }
         val userId = email.takeWhile { it != '@' } + "Id"
         val user = User(userId, email, about)
         userForPassword.getOrPut(password, ::mutableListOf).add(user)
         return user
     }
 }
+
+class DuplicateAccountException : Throwable()
