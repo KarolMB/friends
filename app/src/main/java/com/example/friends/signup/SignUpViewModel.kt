@@ -29,15 +29,22 @@ class SignUpViewModel(
                 _mutableSignUpState.value = SignUpState.BadPassword
             }
 
-            CredentialsValidationResult.Valid -> {
-                try {
-                    val user = createUser(email, about, password)
-                    _mutableSignUpState.value = SignUpState.SignedUp(user)
-                } catch (duplicateAccount: DuplicateAccountException) {
-                    _mutableSignUpState.value = SignUpState.DuplicateAccount
-                }
+            is CredentialsValidationResult.Valid -> {
+                val result = signUp(email, about, password)
+                _mutableSignUpState.value = result
             }
         }
+    }
+
+    private fun signUp(
+        email: String,
+        about: String,
+        password: String
+    ) = try {
+        val user = createUser(email, about, password)
+        SignUpState.SignedUp(user)
+    } catch (duplicateAccount: DuplicateAccountException) {
+        SignUpState.DuplicateAccount
     }
 
     private fun createUser(
