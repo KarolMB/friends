@@ -1,9 +1,11 @@
 package com.example.friends.signup
 
 import com.example.friends.InstantTaskExecutorExtension
+import com.example.friends.domain.validation.CredentialsValidationResult
 import com.example.friends.domain.validation.RegexCredentialsValidator
 import com.example.friends.signup.state.SignUpState
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
@@ -43,5 +45,14 @@ class CredentialsValidationTest {
         viewModel.createAccount("test@test.com", password, ":about:")
 
         assertEquals(SignUpState.BadPassword, viewModel.signUpState.value)
+    }
+
+    @Test
+    fun validateCredentials() {
+        val validator = RegexCredentialsValidator()
+
+        val result = validator.credentialsValidationResult("test@test.com", "123abAB!$")
+
+        assertEquals(CredentialsValidationResult.Valid, result)
     }
 }

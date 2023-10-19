@@ -25,6 +25,10 @@ class SignUpViewModel(
             is CredentialsValidationResult.InvalidPassword -> {
                 _mutableSignUpState.value = SignUpState.BadPassword
             }
+
+            CredentialsValidationResult.Valid -> {
+                _mutableSignUpState.value = SignUpState.Valid
+            }
         }
     }
 
