@@ -1,6 +1,7 @@
 package com.example.friends.signup
 
 import com.example.friends.InstantTaskExecutorExtension
+import com.example.friends.domain.validation.RegexCredentialsValidator
 import com.example.friends.signup.state.SignUpState
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.extension.ExtendWith
@@ -19,7 +20,7 @@ class CredentialsValidationTest {
         "''",
     )
     fun invalidEmail(email: String) {
-        val viewModel = SignUpViewModel()
+        val viewModel = SignUpViewModel(RegexCredentialsValidator())
 
         viewModel.createAccount(email, ":password:", ":about:")
 
@@ -37,7 +38,7 @@ class CredentialsValidationTest {
         "'ABDCDEF4567!$'",
     )
     fun invalidPassword(password: String) {
-        val viewModel = SignUpViewModel()
+        val viewModel = SignUpViewModel(RegexCredentialsValidator())
 
         viewModel.createAccount("test@test.com", password, ":about:")
 
